@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function () {
+            var socket = io();
+            $('form').submit(function () {
+                socket.emit('newmsg', $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+            socket.on('message', (msg) => {
+                $('#messages').append($('<li>').text(msg));
+            });
+            socket.on('useronline', (data) => {
+                document.getElementById('id1').innerHTML = data.userID + ' is online';
+                setTimeout(function () {
+                    document.getElementById("id1").innerHTML = "";
+                }, 3000);
+            });
+            socket.on('useroffline', (data) => {
+                document.getElementById('id2').innerHTML = data.userID + ' gone offline';
+                setTimeout(function () {
+                    document.getElementById("id2").innerHTML = "";
+                }, 3000);
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <br>
+    <form action="">
+        <span id="id1">
+        </span>
+        <input id="m" autocomplete="off" />
+        <span id="id2"></span>
+        <br>
+        <br>
+        <button>Send</button>
+    </form>
+</body>
+
+</html>
